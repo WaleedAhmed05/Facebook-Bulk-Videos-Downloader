@@ -1,17 +1,6 @@
 """
-Created on Thu Aug  1 14:57:53 2019
-
 @author: Waleed Ahmed
-#Version 0.5
-
-~Standard resolutions videos are now downloading, if HD not available.
-~Invalid Characters videos are now saving as their iteration number's name.
-~Program continuing its iteration, if video has privacy ON or if Video URL is invalid.
-~Headless browser added, No UI of browser.
-~If Video_links list is empty, it will print an error to put some links in file.
-
-
-
+#Version 0.6
 """
 
 import urllib.request
@@ -20,6 +9,24 @@ from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 import os
 
+def Download_ChromeDriver():
+    import zipfile
+    downlink="https://chromedriver.storage.googleapis.com/76.0.3809.126/chromedriver_win32.zip" #Latest chromedriver download link for windows
+    print("Downloading...")
+    urllib.request.urlretrieve(downlink, "webdriver.zip")
+    with zipfile.ZipFile("webdriver.zip", 'r') as zip_pos:
+        print("Unzipping...")
+        zip_pos.extractall()
+    os.remove("webdriver.zip") 
+
+if not os.path.exists("chromedriver.exe"):
+    print("Chromedriver doesn't exist, Downloading Webdriver...")
+    Download_ChromeDriver()  
+    
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+driver = webdriver.Chrome('chromedriver', options=chrome_options,) #remove this and above line if you want to see UI of browser.
+   
 data=pd.read_csv("Video_links.csv")
 data_length=len(data)
 
@@ -27,14 +34,8 @@ if data_length==0:
     print("Video List is empty, please add some video links in csv file")
 else:
     print("Total Videos to be download..... "+str([data_length]))
-   
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--headless')
-driver = webdriver.Chrome('chromedriver', options=chrome_options,)
 
-
-
-def download():
+def Download():
     download_id=elemt3.get_attribute('href')
     video_title=elemt3.get_attribute('download').replace('-fbdown.net.mp4','')
     print("Video Name: "+video_title)
@@ -64,14 +65,16 @@ for i in range(data_length):
     elemt2.click()
     
     try:
-        elemt3=driver.find_element_by_id("hdlink")
+        elemt3=driver.find_element_by_id("hdlink") #it will download HD resolution video by default
         print("HD Result Available, Downloading in HD Result:")
-        download()
+        Download()
     except NoSuchElementException:
         try:
             elemt3=driver.find_element_by_id("sdlink")
             print("No HD Available, Downloading in Standard Resolution:")
-            download()
+            Download()
         except NoSuchElementException:
             print("Video "+str([i+1])+" is unable to download, due to privacy or it might be invalid URL.")
             pass
+
+driver.quit()        

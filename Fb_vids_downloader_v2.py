@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 22 18:45:53 2019
-version 2.0
+Created on Thu Aug 22 2019
+version 2.1
 @author: Waleed
 """
 
@@ -15,7 +15,7 @@ import pandas as pd
 
 def Download_ChromeDriver():
     import zipfile
-    downlink="https://chromedriver.storage.googleapis.com/76.0.3809.126/chromedriver_win32.zip" #Latest chromedriver download link for windows
+    downlink="https://chromedriver.storage.googleapis.com/83.0.4103.39/chromedriver_win32.zip" #Latest chromedriver download link for windows 7-July-20
     print("Downloading...")
     urllib.request.urlretrieve(downlink, "webdriver.zip")
     with zipfile.ZipFile("webdriver.zip", 'r') as zip_pos:
